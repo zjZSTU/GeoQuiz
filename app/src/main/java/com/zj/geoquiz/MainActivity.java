@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,7 +17,8 @@ public class MainActivity extends Activity {
 
     private Button mTrueButton;
     private Button mFalseButton;
-    private Button mNextButton;
+    private ImageButton mNextRightButton;
+    private ImageButton mNextLeftButton;
     private TextView mQuestionTextView;
 
     private TrueFalse[] mQuestionBank = new TrueFalse[] {
@@ -55,6 +57,13 @@ public class MainActivity extends Activity {
 
         mQuestionTextView = (TextView)findViewById(R.id.question_text_view);
         updateQuestion();
+        mQuestionTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
+                updateQuestion();
+            }
+        });
 
         mTrueButton = (Button) findViewById(R.id.true_button);
         mTrueButton.setOnClickListener(new View.OnClickListener() {
@@ -72,11 +81,23 @@ public class MainActivity extends Activity {
             }
         });
 
-        mNextButton = (Button)findViewById(R.id.next_button);
-        mNextButton.setOnClickListener(new View.OnClickListener() {
+        mNextRightButton = (ImageButton)findViewById(R.id.next_right);
+        mNextRightButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mCurrentIndex = (mCurrentIndex+1)%mQuestionBank.length;
+                updateQuestion();
+            }
+        });
+
+        mNextLeftButton = (ImageButton)findViewById(R.id.next_left);
+        mNextLeftButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mCurrentIndex == 0)
+                    mCurrentIndex = mQuestionBank.length-1;
+                else
+                    mCurrentIndex = (mCurrentIndex-1)%mQuestionBank.length;
                 updateQuestion();
             }
         });
