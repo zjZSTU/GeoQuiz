@@ -18,12 +18,15 @@ public class MainActivity extends Activity {
 
     private final static String TAG = "QuizActivity";
     private final static String KEY_INDEX = "index";
+    private final static String KEY_CHEATER = "cheater";
 
     private Button mTrueButton;
     private Button mFalseButton;
     private Button mNextButton;
     private Button mCheatButton;
     private TextView mQuestionTextView;
+
+    private static boolean isCheater[] = new boolean[5];
 
     private TrueFalse[] mQuestionBank = new TrueFalse[] {
             new TrueFalse(R.string.question_oceans, true),
@@ -46,7 +49,7 @@ public class MainActivity extends Activity {
 
         int messageResId = 0;
 
-        if (mIsCheater) {
+        if (mIsCheater || isCheater[mCurrentIndex]) {
             messageResId = R.string.judgment_toast;
         } else if (userPressedTrue == answerIsTrue) {
             messageResId = R.string.correct_toast;
@@ -62,6 +65,7 @@ public class MainActivity extends Activity {
         super.onSaveInstanceState(outState);
         Log.i(TAG, "onSaveInstanceState(Bundle) called");
         outState.putInt(KEY_INDEX, mCurrentIndex);
+        outState.putBoolean(KEY_CHEATER, mIsCheater);
     }
 
     @Override
@@ -70,6 +74,9 @@ public class MainActivity extends Activity {
             return ;
         }
         mIsCheater = data.getBooleanExtra(CheatActivity.EXTRA_ANSWER_SHOWN, false);
+        if (mIsCheater) {
+            isCheater[mCurrentIndex] = true;
+        }
     }
 
     @Override
@@ -80,6 +87,7 @@ public class MainActivity extends Activity {
 
         if (savedInstanceState != null) {
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
+            mIsCheater = savedInstanceState.getBoolean(KEY_CHEATER, false);
         }
 
         mQuestionTextView = (TextView)findViewById(R.id.question_text_view);
